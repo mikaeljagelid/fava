@@ -11,6 +11,7 @@ import {
   show_closed_accounts,
 } from "../stores/fava_options.ts";
 import { accounts_set } from "../stores/index.ts";
+import type { VisibleTreeInfo } from "../stores/tree_table_visibility.ts";
 
 const key = Symbol("tree-table");
 
@@ -64,3 +65,39 @@ export const get_not_shown = derived(
       return not_shown;
     },
 );
+
+export function compute_visible_tree(
+  nodes: AccountTreeNode[],
+  not_shown: ReadonlySet<string>,
+  toggled: ReadonlySet<string>,
+): VisibleTreeInfo {
+  const order: string[] = [];
+  const visible_children = new Map<string, string[]>();
+
+  const visit = (node: AccountTreeNode): void => {
+    if (not_shown.has(node.account)) {
+      return;
+    }
+    order.push(node.account);
+    if (toggled.has(node.account)) {
+      visible_children.set(node.account, []);
+      return;
+    }
+    const children = node.children.filter((child) => {
+      return !not_shown.has(child.account);
+    });
+    visible_children.set(
+      node.account,
+      children.map((child) => child.account),
+    );
+    for (const child of children) {
+      visit(child);
+    }
+  };
+
+  for (const node of nodes) {
+    visit(node);
+  }
+
+  return { order, visible_children };
+}

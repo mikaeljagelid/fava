@@ -6,8 +6,10 @@
   import { urlForAccount } from "../helpers.ts";
   import { barChartMode, chartToggledCurrencies } from "../stores/chart.ts";
   import { ctx, currentTimeFilterDateFormat, short } from "../stores/format.ts";
+  import { tree_table_visibility } from "../stores/tree_table_visibility.ts";
   import Axis from "./Axis.svelte";
   import type { BarChart } from "./bar.ts";
+  import { match_visible_info } from "./bar.ts";
   import {
     currenciesScale,
     filterTicks,
@@ -30,9 +32,11 @@
   const margin = { top: 10, right: 10, bottom: 30, left: 40 };
   const height = 250;
 
-  let accounts = $derived(chart.accounts);
-
-  let filtered = $derived(chart.filter($chartToggledCurrencies));
+  let visible_info = $derived(
+    match_visible_info($tree_table_visibility, chart.accounts),
+  );
+  let filtered = $derived(chart.filter($chartToggledCurrencies, visible_info));
+  let accounts = $derived(filtered.accounts);
   let currencies = $derived(filtered.currencies);
   let bar_groups = $derived(filtered.bar_groups);
   let stacks = $derived(filtered.stacks);
@@ -46,7 +50,7 @@
 
   /** Whether to display stacked bars. */
   let showStackedBars = $derived(
-    $barChartMode === "stacked" && chart.hasStackedData,
+    $barChartMode === "stacked" && accounts.length > 1,
   );
   /** The currently hovered account. */
   let highlighted: string | null = $state(null);

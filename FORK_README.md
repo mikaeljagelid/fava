@@ -27,6 +27,14 @@ This fork adds a small set of UI and reporting tweaks on top of upstream Fava.
     - `render_amount_hide_operating`
     - `render_num_hide_operating`
 
+- Stacked bars follow visible tree nodes (Expenses report)
+
+  - Stacked bar series now match the currently visible tree nodes.
+  - Expanding/collapsing nodes updates the chart immediately.
+  - Exclusive values are used to prevent double counting when parents are
+    expanded.
+  - Legend/stack order follows the tree order.
+
 ## How to Use Column Width Options
 
 Add `fava-option` custom entries in your Beancount file:

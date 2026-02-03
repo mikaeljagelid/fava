@@ -3,6 +3,7 @@ import type { Series } from "d3-shape";
 import { stack, stackOffsetDiverging } from "d3-shape";
 
 import type { FormatterContext } from "../format.ts";
+import { is_descendant_or_equal } from "../lib/account.ts";
 import type { ValidationT, Validator } from "../lib/validation.ts";
 import {
   array,
@@ -12,6 +13,7 @@ import {
   record,
   string,
 } from "../lib/validation.ts";
+import type { VisibleTreeInfo } from "../stores/tree_table_visibility.ts";
 import type { ChartContext } from "./context.ts";
 import type { ParsedFavaChart } from "./index.ts";
 import type { TooltipContent } from "./tooltip.ts";
@@ -39,11 +41,6 @@ export class BarChart {
   readonly type = "barchart";
   /** The accounts that occur in some bar.  */
   readonly accounts: string[];
-  /** For each currency, the stacks (one series per account) */
-  private readonly stacks: [
-    currency: string,
-    stacks: Series<BarChartDatum, string>[],
-  ][];
   readonly label: string | null;
   /** The currencies that are shown in this bar chart. */
   readonly currencies: readonly string[];
@@ -61,32 +58,41 @@ export class BarChart {
     this.accounts = Array.from(
       new Set(bar_groups.map((d) => Object.keys(d.account_balances)).flat(2)),
     ).sort();
-
-    this.stacks = currencies.map((currency) => [
-      currency,
-      stack<BarChartDatum, string>()
-        .keys(this.accounts)
-        .value((d, account) => d.account_balances[account]?.[currency] ?? 0)
-        .offset(stackOffsetDiverging)(bar_groups)
-        .filter((b) => b[0] !== b[1] && !Number.isNaN(b[1])),
-    ]);
   }
 
-  filter(hidden_names: string[]): {
+  filter(
+    hidden_names: string[],
+    visible_info: VisibleTreeInfo | null,
+  ): {
     currencies: string[];
     bar_groups: BarChartDatum[];
     stacks: [currency: string, stacks: Series<BarChartDatum, string>[]][];
+    accounts: string[];
   } {
     const hidden_names_set = new Set(hidden_names);
     const currencies = new Set(
       this.currencies.filter((c) => !hidden_names_set.has(c)),
     );
-    const bar_groups = this.bar_groups.map((b) => ({
-      ...b,
-      values: b.values.filter((v) => currencies.has(v.currency)),
-    }));
-    const stacks = this.stacks.filter((s) => currencies.has(s[0]));
-    return { currencies: [...currencies], bar_groups, stacks };
+    const accounts = visible_info?.order ?? this.accounts;
+    const bar_groups = this.bar_groups.map((b) => {
+      const account_balances = visible_info
+        ? compute_exclusive_balances(b.account_balances, visible_info, accounts)
+        : b.account_balances;
+      return {
+        ...b,
+        account_balances,
+        values: b.values.filter((v) => currencies.has(v.currency)),
+      };
+    });
+    const stacks = [...currencies].map((currency) => [
+      currency,
+      stack<BarChartDatum, string>()
+        .keys(accounts)
+        .value((d, account) => d.account_balances[account]?.[currency] ?? 0)
+        .offset(stackOffsetDiverging)(bar_groups)
+        .filter((b) => b[0] !== b[1] && !Number.isNaN(b[1])),
+    ]);
+    return { currencies: [...currencies], bar_groups, stacks, accounts };
   }
 
   /** Whether this chart contains any stacks (or is just a single account). */
@@ -133,6 +139,62 @@ export class BarChart {
     content.push(domHelpers.em(d.label));
     return content;
   }
+}
+
+function compute_exclusive_balances(
+  account_balances: Record<string, Record<string, number>>,
+  visible_info: VisibleTreeInfo,
+  accounts: string[],
+): Record<string, Record<string, number>> {
+  const inclusive: Record<string, Record<string, number>> = {};
+  const balances = Object.entries(account_balances);
+  for (const account of accounts) {
+    const matches = is_descendant_or_equal(account);
+    const totals: Record<string, number> = {};
+    for (const [other, values] of balances) {
+      if (!matches(other)) {
+        continue;
+      }
+      for (const [currency, value] of Object.entries(values)) {
+        totals[currency] = (totals[currency] ?? 0) + value;
+      }
+    }
+    inclusive[account] = totals;
+  }
+
+  const exclusive: Record<string, Record<string, number>> = {};
+  for (const account of accounts) {
+    const base = inclusive[account] ?? {};
+    const values: Record<string, number> = { ...base };
+    const children = visible_info.visible_children.get(account) ?? [];
+    for (const child of children) {
+      const child_values = inclusive[child] ?? {};
+      for (const [currency, value] of Object.entries(child_values)) {
+        values[currency] = (values[currency] ?? 0) - value;
+      }
+    }
+    exclusive[account] = values;
+  }
+  return exclusive;
+}
+
+export function match_visible_info(
+  visibility: ReadonlyMap<string, VisibleTreeInfo>,
+  accounts: readonly string[],
+): VisibleTreeInfo | null {
+  if (!accounts.length) {
+    return null;
+  }
+  let best: [root: string, info: VisibleTreeInfo] | null = null;
+  for (const [root, info] of visibility) {
+    const is_descendant = is_descendant_or_equal(root);
+    if (accounts.every(is_descendant)) {
+      if (best == null || root.length > best[0].length) {
+        best = [root, info];
+      }
+    }
+  }
+  return best?.[1] ?? null;
 }
 
 /** Get the currencies to use for the bar chart. */

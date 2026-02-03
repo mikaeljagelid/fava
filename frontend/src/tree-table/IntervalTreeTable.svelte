@@ -6,9 +6,18 @@
   import type { AccountTreeNode } from "../charts/hierarchy.ts";
   import { urlForAccount } from "../helpers.ts";
   import type { NonEmptyArray } from "../lib/array.ts";
+  import { toggled_accounts } from "../stores/accounts.ts";
   import { currentTimeFilterDateFormat } from "../stores/format.ts";
+  import {
+    clear_tree_visibility,
+    set_tree_visibility,
+  } from "../stores/tree_table_visibility.ts";
   import AccountCellHeader from "./AccountCellHeader.svelte";
-  import { get_not_shown, setTreeTableNotShownContext } from "./helpers.ts";
+  import {
+    compute_visible_tree,
+    get_not_shown,
+    setTreeTableNotShownContext,
+  } from "./helpers.ts";
   import IntervalTreeTableNode from "./IntervalTreeTableNode.svelte";
 
   interface Props {
@@ -48,6 +57,18 @@
         : [title, title];
     }),
   );
+
+  $effect(() => {
+    const root = trees[0];
+    const roots = account === "" ? root.children : [root];
+    set_tree_visibility(
+      account,
+      compute_visible_tree(roots, $not_shown, $toggled_accounts),
+    );
+    return () => {
+      clear_tree_visibility(account);
+    };
+  });
 </script>
 
 <ol class="flex-table tree-table-new">

@@ -39,7 +39,7 @@ option "operating_currency" "SEK"
   Assets:Bank:Checking -850 SEK
   Expenses:Groceries 850 SEK
 
-2025-09-15 * "SL" "Transit card"
+2025-10-15 * "SL" "Transit card"
   Assets:Bank:Checking -990 SEK
   Expenses:Transport 990 SEK
 
