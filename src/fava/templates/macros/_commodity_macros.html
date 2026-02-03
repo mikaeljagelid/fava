@@ -11,3 +11,19 @@
 {% macro render_num(ledger, currency, number) -%}
 <span title='{{ ledger.commodities.name(currency) }}'>{{ number|format_currency(currency)|incognito }} {{ currency }}</span>
 {%- endmacro %}
+
+{% macro render_amount_hide_operating(ledger, amount, class="num") %}
+{% if amount is none or amount.number is none -%}
+  <span class='{{ class }}'></span>
+{%- else -%}
+  {% set currency = amount.currency %}
+  <span class='{{ class }}' title='{{ ledger.commodities.name(currency) }}'>
+    {{- amount.number|format_currency(currency)|incognito -}}
+    {%- if currency not in ledger.options["operating_currency"] %} {{ currency }}{% endif -%}
+  </span>
+{%- endif %}
+{% endmacro %}
+
+{% macro render_num_hide_operating(ledger, currency, number) -%}
+<span title='{{ ledger.commodities.name(currency) }}'>{{ number|format_currency(currency)|incognito }}{% if currency not in ledger.options["operating_currency"] %} {{ currency }}{% endif %}</span>
+{%- endmacro %}

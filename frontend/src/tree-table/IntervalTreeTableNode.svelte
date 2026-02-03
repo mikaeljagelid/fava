@@ -6,6 +6,7 @@
   import { toggled_accounts } from "../stores/accounts.ts";
   import { ctx } from "../stores/format.ts";
   import { currency_name } from "../stores/index.ts";
+  import { operating_currency } from "../stores/options.ts";
   import AccountCell from "./AccountCell.svelte";
   import Diff from "./Diff.svelte";
   import { getTreeTableNotShownContext } from "./helpers.ts";
@@ -29,6 +30,11 @@
   let account_budgets = $derived(budgets[account]);
 
   let is_toggled = $derived($toggled_accounts.has(account));
+
+  const format_amount = (currency: string, number: number): string =>
+    $operating_currency.includes(currency)
+      ? $ctx.num(number, currency)
+      : $ctx.amount(number, currency);
 </script>
 
 <li>
@@ -48,7 +54,7 @@
         {#each Object.entries(shown_balance) as [currency, number] (currency)}
           {@const budget = shown_budget?.[currency]}
           <span title={$currency_name(currency)}>
-            {$ctx.amount(number, currency)}
+            {format_amount(currency, number)}
           </span>
           {#if budget}
             <Diff diff={budget - number} num={budget} {currency} />
@@ -58,7 +64,7 @@
         {#if shown_budget}
           {#each Object.entries(shown_budget).filter(([c]) => !(shown_balance[c] ?? 0)) as [currency, budget] (currency)}
             <span title={$currency_name(currency)}>
-              {$ctx.amount(0, currency)}
+              {format_amount(currency, 0)}
             </span>
             <Diff diff={budget} num={budget} {currency} />
             <br />

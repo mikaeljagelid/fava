@@ -42,6 +42,8 @@ import { init_color_scheme } from "./stores/color_scheme.ts";
 import {
   auto_reload,
   invert_gains_losses_colors,
+  tree_table_num_width_em,
+  tree_table_other_width_em,
 } from "./stores/fava_options.ts";
 import { errors, ledgerData } from "./stores/index.ts";
 import { ledger_mtime, read_mtime } from "./stores/mtime.ts";
@@ -132,6 +134,20 @@ function init(): void {
 
   invert_gains_losses_colors.subscribe(($invert) => {
     document.documentElement.classList.toggle("invert-gains-losses", $invert);
+  });
+
+  tree_table_num_width_em.subscribe((width) => {
+    document.documentElement.style.setProperty(
+      "--tree-table-num-width",
+      `${width.toString()}em`,
+    );
+  });
+
+  tree_table_other_width_em.subscribe((width) => {
+    document.documentElement.style.setProperty(
+      "--tree-table-other-width",
+      `${width.toString()}em`,
+    );
   });
 }
 

@@ -110,6 +110,8 @@ class FavaOptions:
     show_accounts_with_zero_transactions: bool = True
     show_closed_accounts: bool = False
     sidebar_show_queries: int = 5
+    tree_table_num_width_em: float = 6.5
+    tree_table_other_width_em: float = 8.5
     unrealized: str = "Unrealized"
     upcoming_events: int = 7
     uptodate_indicator_grey_lookback_days: int = 60
@@ -182,6 +184,7 @@ _fields = fields(FavaOptions)
 All_OPTS = {f.name for f in _fields}
 BOOL_OPTS = {f.name for f in _fields if str(f.type) == "bool"}
 INT_OPTS = {f.name for f in _fields if str(f.type) == "int"}
+FLOAT_OPTS = {f.name for f in _fields if str(f.type) == "float"}
 TUPLE_OPTS = {f.name for f in _fields if f.type.startswith("tuple[str,")}
 STR_OPTS = {f.name for f in _fields if f.type.startswith("str")}
 
@@ -220,6 +223,8 @@ def parse_option_custom_entry(  # noqa: PLR0912
         setattr(options, key, value.lower() == "true")
     elif key in INT_OPTS:
         setattr(options, key, int(value))
+    elif key in FLOAT_OPTS:
+        setattr(options, key, float(value))
     else:  # key in TUPLE_OPTS
         setattr(options, key, tuple(value.strip().split(" ")))
 

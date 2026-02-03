@@ -57,6 +57,8 @@ const fava_options = object({
   show_closed_accounts: boolean,
   show_accounts_with_zero_balance: boolean,
   show_accounts_with_zero_transactions: boolean,
+  tree_table_num_width_em: number,
+  tree_table_other_width_em: number,
   locale: optional(string),
   uptodate_indicator_grey_lookback_days: number,
   insert_entry: array(

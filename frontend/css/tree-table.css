@@ -16,13 +16,13 @@
 }
 
 .tree-table-new .num {
-  /** Space for about 14 characters, so a number like 1234512345.123 fits. */
-  width: 9em;
+  /** Space for about 10 characters, so a number like 123451.12 fits. */
+  width: var(--tree-table-num-width, 6.5em);
 }
 
 .tree-table-new .other {
-  /** Space for about 18 (four more) characters, so an amount like 1234512345.123 USD fits. */
-  width: 12em;
+  /** Space for about 13 (four more) characters, so an amount like 123451.12 USD fits. */
+  width: var(--tree-table-other-width, 8.5em);
 }
 
 .tree-table.fullwidth {

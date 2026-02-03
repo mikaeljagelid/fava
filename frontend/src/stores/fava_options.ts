@@ -63,6 +63,14 @@ export const invert_gains_losses_colors = derived(
   fava_options,
   ($fava_options) => $fava_options.invert_gains_losses_colors,
 );
+export const tree_table_num_width_em = derived(
+  fava_options,
+  ($fava_options) => $fava_options.tree_table_num_width_em,
+);
+export const tree_table_other_width_em = derived(
+  fava_options,
+  ($fava_options) => $fava_options.tree_table_other_width_em,
+);
 // TODO: equality comparison
 export const insert_entry = derived(
   fava_options,

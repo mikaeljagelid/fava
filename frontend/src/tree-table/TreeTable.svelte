@@ -36,7 +36,9 @@
     <p>
       <AccountCellHeader {account} />
       {#each $operating_currency as currency (currency)}
-        <span class="num" title={$currency_name(currency)}>{currency}</span>
+        <span class="num" title={$currency_name(currency)}>
+          {#if $operating_currency.length > 1}{currency}{/if}
+        </span>
       {/each}
       <span class="num other">{_("Other")}</span>
     </p>

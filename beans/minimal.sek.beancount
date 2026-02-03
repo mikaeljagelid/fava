@@ -1,0 +1,92 @@
+option "title" "Minimal SEK Ledger"
+option "operating_currency" "SEK"
+2016-06-14 custom "fava-option" "locale" "se"
+2026-02-03 custom "fava-option" "tree-table-num-width-em" "13.0"
+2026-02-03 custom "fava-option" "tree-table-other-width-em" "5.0"
+
+
+2025-08-01 open Assets:Bank:Checking SEK
+2025-08-01 open Assets:Bank:Savings SEK
+2025-08-01 open Assets:Cash SEK
+2025-08-01 open Income:Salary SEK
+2025-08-01 open Income:Interest SEK
+2025-08-01 open Expenses:Rent SEK
+2025-08-01 open Expenses:Groceries SEK
+2025-08-01 open Expenses:Utilities:Electric SEK
+2025-08-01 open Expenses:Utilities:Internet SEK
+2025-08-01 open Expenses:Transport SEK
+2025-08-01 open Expenses:Dining SEK
+2025-08-01 open Expenses:Health SEK
+2025-08-01 open Expenses:Insurance SEK
+2025-08-01 open Expenses:Subscriptions SEK
+2025-08-01 open Expenses:Shopping SEK
+2025-08-01 open Expenses:Travel SEK
+2025-08-01 open Equity:Opening-Balances SEK
+
+2025-08-03 * "Opening Balance"
+  Assets:Bank:Checking 15000 SEK
+  Equity:Opening-Balances -15000 SEK
+
+2025-08-25 * "Employer AB" "Salary"
+  Assets:Bank:Checking 32000 SEK
+  Income:Salary -32000 SEK
+
+2025-09-01 * "Rent September"
+  Assets:Bank:Checking -10500 SEK
+  Expenses:Rent 10500 SEK
+
+2025-09-04 * "ICA" "Groceries"
+  Assets:Bank:Checking -850 SEK
+  Expenses:Groceries 850 SEK
+
+2025-09-15 * "SL" "Transit card"
+  Assets:Bank:Checking -990 SEK
+  Expenses:Transport 990 SEK
+
+2025-10-02 * "Elbolaget" "Electricity"
+  Assets:Bank:Checking -620 SEK
+  Expenses:Utilities:Electric 620 SEK
+
+2025-10-05 * "Internet AB" "Broadband"
+  Assets:Bank:Checking -399 SEK
+  Expenses:Utilities:Internet 399 SEK
+
+2025-10-25 * "Employer AB" "Salary"
+  Assets:Bank:Checking 32000 SEK
+  Income:Salary -32000 SEK
+
+2025-11-07 * "Apoteket" "Pharmacy"
+  Assets:Bank:Checking -420 SEK
+  Expenses:Health 420 SEK
+
+2025-11-12 * "TryggHansa" "Insurance"
+  Assets:Bank:Checking -750 SEK
+  Expenses:Insurance 750 SEK
+
+2025-11-28 * "Transfer to savings"
+  Assets:Bank:Checking -5000 SEK
+  Assets:Bank:Savings 5000 SEK
+
+2025-12-03 * "Spotify" "Subscription"
+  Assets:Bank:Checking -129 SEK
+  Expenses:Subscriptions 129 SEK
+
+2025-12-18 * "H&M" "Clothing"
+  Assets:Bank:Checking -900 SEK
+  Expenses:Shopping 900 SEK
+
+2026-01-05 * "Restaurant" "Dinner"
+  Assets:Bank:Checking -520 SEK
+  Expenses:Dining 520 SEK
+
+2026-01-25 * "Employer AB" "Salary"
+  Assets:Bank:Checking 32000 SEK
+  Income:Salary -32000 SEK
+
+2026-02-01 * "SJ" "Train ticket"
+  Assets:Bank:Checking -680 SEK
+  Expenses:Travel 680 SEK
+
+2026-02-02 * "Bank" "Savings interest"
+  Assets:Bank:Savings 35 SEK
+  Income:Interest -35 SEK
