@@ -20,6 +20,9 @@ current year up to today, or `year-1 - year` for all entries of the last and
 current year. To prevent subtraction, use parentheses: `(month)-10` refers to
 the 10th of this month, whereas `month-10` would be 10 months ago.
 
+You can also use rolling duration shortcuts that end today: `12m` (last 12
+months), `30d` (last 30 days), `8w` (last 8 weeks), or `2y` (last 2 years).
+
 ### Summarisation of previous balances and conversions
 
 When setting a time filter, Fava does not just filter to the transactions in the

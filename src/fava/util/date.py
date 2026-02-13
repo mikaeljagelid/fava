@@ -7,6 +7,7 @@ Note:
 
 from __future__ import annotations
 
+import calendar
 import datetime
 import re
 from abc import ABC
@@ -54,6 +55,7 @@ VARIABLE_RE = re.compile(
     r"\(?(fiscal_year|year|fiscal_quarter|quarter"
     r"|month|week|day)(?:([-+])(\d+))?\)?",
 )
+DURATION_RE = re.compile(r"^(\d+)([dwmy])$")
 
 
 @dataclass(frozen=True)
@@ -430,6 +432,21 @@ def parse_date(  # noqa: PLR0911
 
     string = substitute(string, fye).lower()
 
+    match = DURATION_RE.match(string)
+    if match:
+        amount = int(match.group(1))
+        unit = match.group(2)
+        if amount <= 0:
+            return None, None
+        today = local_today()
+        if unit in {"d", "w"}:
+            days = amount if unit == "d" else amount * 7
+            begin = today - timedelta(days=days - 1)
+            return begin, today + ONE_DAY
+        months = amount * 12 if unit == "y" else amount
+        begin = month_offset_clamped(today, -months)
+        return begin, today + ONE_DAY
+
     match = IS_RANGE_RE.match(string)
     if match:
         return (
@@ -497,6 +514,16 @@ def month_offset(date: datetime.date, months: int) -> datetime.date:
     year_delta, month = divmod(date.month - 1 + months, 12)
 
     return date.replace(year=date.year + year_delta, month=month + 1)
+
+
+def month_offset_clamped(date: datetime.date, months: int) -> datetime.date:
+    """Offsets a date by a given number of months, clamping invalid days."""
+    year_delta, month = divmod(date.month - 1 + months, 12)
+    year = date.year + year_delta
+    month = month + 1
+    last_day = calendar.monthrange(year, month)[1]
+    day = min(date.day, last_day)
+    return date.replace(year=year, month=month, day=day)
 
 
 def parse_fye_string(fye: str) -> FiscalYearEnd | None:
