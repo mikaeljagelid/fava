@@ -27,6 +27,17 @@ This fork adds a small set of UI and reporting tweaks on top of upstream Fava.
     - `render_amount_hide_operating`
     - `render_num_hide_operating`
 
+- Account description in page header
+
+  - If an account's `open` directive has a `description` metadata field, it is
+    shown in the account page header, inline before "Last entry", in italics.
+  - No label is added — the text is rendered as-is.
+  - Example:
+    ```beancount
+    2010-01-01 open Assets:Bank:Savings SEK
+      description: "High-yield savings account"
+    ```
+
 - Stacked bars follow visible tree nodes (Expenses report)
 
   - Stacked bar series now match the currently visible tree nodes.

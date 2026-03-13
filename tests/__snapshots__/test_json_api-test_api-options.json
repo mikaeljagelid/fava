@@ -57,6 +57,8 @@
     "show-accounts-with-zero-transactions": "True",
     "show-closed-accounts": "False",
     "sidebar-show-queries": "5",
+    "tree-table-num-width-em": "6.5",
+    "tree-table-other-width-em": "8.5",
     "unrealized": "'Unrealized'",
     "upcoming-events": "7",
     "uptodate-indicator-grey-lookback-days": "60",

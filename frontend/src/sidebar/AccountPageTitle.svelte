@@ -14,6 +14,7 @@
   let parts = $derived(ancestors(account));
   let details = $derived($account_details[account]);
   let last = $derived(details?.last_entry);
+  let description = $derived(details?.description);
 </script>
 
 <span class="droptarget" data-account-name={account}>
@@ -22,9 +23,11 @@
     >{#if index < parts.length - 1}:{/if}
   {/each}
   <AccountIndicator {account} />
-  {#if last}
+  {#if description != null || last != null}
     <span class="last-activity">
-      (Last entry: <a href="#context-{last.entry_hash}">{day(last.date)}</a>)
+      {#if description != null}<em>{description}</em
+        >{/if}{#if description != null && last != null}&nbsp;&nbsp;&nbsp;{/if}{#if last != null}(Last
+        entry: <a href="#context-{last.entry_hash}">{day(last.date)}</a>){/if}
     </span>
   {/if}
 </span>

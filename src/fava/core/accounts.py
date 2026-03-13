@@ -108,6 +108,9 @@ class AccountData:
     #: The last entry of the account (unless it is a close Entry)
     last_entry: LastEntry | None = None
 
+    #: The description of the account from the Open entry metadata.
+    description: str | None = None
+
 
 class AccountDict(FavaModule, dict[str, AccountData]):
     """Account info dictionary."""
@@ -135,6 +138,8 @@ class AccountDict(FavaModule, dict[str, AccountData]):
             meta = open_entry.meta
             account_data = self.setdefault(open_entry.account)
             account_data.meta = meta
+            if "description" in meta:
+                account_data.description = str(meta["description"])
 
             txn_postings = entries_by_account[open_entry.account]
             last = get_last_entry(txn_postings)

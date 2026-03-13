@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fava",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": [
+        "run",
+        "--directory",
+        "/Users/mikaeljagelid/Documents/50_Dev/fava",
+        "fava",
+        "--debug",
+        "-p",
+        "5001",
+        "/Users/mikaeljagelid/bc/main.beancount"
+      ],
+      "port": 5001
+    },
+    {
+      "name": "frontend-watch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5000
+    }
+  ]
+}
