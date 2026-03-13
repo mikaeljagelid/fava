@@ -1,6 +1,8 @@
 import { get as store_get } from "svelte/store";
 
+import { get_source_slice, put_source_slice } from "../../api/index.ts";
 import { escape_for_regex } from "../../lib/regex.ts";
+import { notify_err } from "../../notifications.ts";
 import { router } from "../../router.ts";
 import { fql_filter } from "../../stores/filters.ts";
 
@@ -41,8 +43,42 @@ export function handle_journal_click({ target }: Event): void {
     const value = `"^${escape_for_regex(target.innerText)}$"`;
     const expr = `${key}${value}`;
     add_filter(target.closest(".postings") ? `any(${expr})` : expr);
+  } else if (target.matches(".flag") && target.closest("li.transaction")) {
+    // Toggle transaction flag between * and ! when clicking on it.
+    const li = target.closest("li.transaction");
+    const context_link = li?.querySelector(
+      "a[href^='#context-']",
+    ) as HTMLAnchorElement | null;
+    if (!context_link) {
+      return;
+    }
+    const href = context_link.getAttribute("href");
+    if (href == null) {
+      return;
+    }
+    const entry_hash = href.slice("#context-".length);
+    toggle_flag(entry_hash).catch(() => {
+      // errors reported inside toggle_flag
+    });
   } else if (target.closest(".indicators")) {
     // Toggle postings and metadata by clicking on indicators.
     target.closest(".journal > li")?.classList.toggle("show-full-entry");
+  }
+}
+
+async function toggle_flag(entry_hash: string): Promise<void> {
+  try {
+    const { slice, sha256sum } = await get_source_slice({ entry_hash });
+    const toggled = slice.replace(
+      /^(\d{4}-\d{2}-\d{2} )([*!])/,
+      (_, date: string, flag: string) => date + (flag === "*" ? "!" : "*"),
+    );
+    if (toggled === slice) {
+      return;
+    }
+    await put_source_slice({ entry_hash, source: toggled, sha256sum });
+    router.reload();
+  } catch (error) {
+    notify_err(error, (e) => `Toggling flag failed: ${e.message}`);
   }
 }

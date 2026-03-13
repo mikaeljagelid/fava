@@ -38,6 +38,14 @@ This fork adds a small set of UI and reporting tweaks on top of upstream Fava.
       description: "High-yield savings account"
     ```
 
+- Click-to-toggle transaction flag
+
+  - Clicking the flag column (`*` or `!`) in the journal table toggles the
+    transaction between cleared (`*`) and pending (`!`) in-place.
+  - The change is written directly to the Beancount source file via the existing
+    source-slice API and the page reloads automatically.
+  - The flag column shows a pointer cursor to indicate it is interactive.
+
 - Stacked bars follow visible tree nodes (Expenses report)
 
   - Stacked bar series now match the currently visible tree nodes.
