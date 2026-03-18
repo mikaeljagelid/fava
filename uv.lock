@@ -458,7 +458,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -496,6 +496,7 @@ excel = [
 [package.dev-dependencies]
 dev = [
     { name = "fava", extra = ["excel"] },
+    { name = "fava-dashboards" },
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "pytest" },
@@ -569,6 +570,7 @@ provides-extras = ["excel"]
 [package.metadata.requires-dev]
 dev = [
     { name = "fava", extras = ["excel"] },
+    { name = "fava-dashboards", specifier = ">=1.2.3" },
     { name = "mypy", specifier = ">=1.14" },
     { name = "pre-commit", specifier = ">=4" },
     { name = "pytest", specifier = ">=8" },
@@ -604,6 +606,20 @@ types = [
     { name = "types-requests", specifier = ">=2.32.0.20250515" },
     { name = "types-setuptools", specifier = ">=67" },
     { name = "types-simplejson", specifier = ">=3" },
+]
+
+[[package]]
+name = "fava-dashboards"
+version = "1.2.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "beanquery" },
+    { name = "fava" },
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/10/74/453f549167c8ff0128f3379e6a007be04fd3d8df8ba4ee2f33a133895259/fava_dashboards-1.2.3.tar.gz", hash = "sha256:bd3a578cac945d399cb9c1133ee2b24020d1741aa98fea41e8e5331de8a8024e", size = 3208633, upload-time = "2026-03-08T22:29:08.579Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/eb/54da32e6d48656faf1d6aeeedf2185bf4269305e3ed4789d3dd73b60b2d9/fava_dashboards-1.2.3-py3-none-any.whl", hash = "sha256:9ca2fb1341e09255b6ad441caa5967255bd0a503d25b4e1a4c6351777c971d4d", size = 483833, upload-time = "2026-03-08T22:29:07.221Z" },
 ]
 
 [[package]]

@@ -111,6 +111,7 @@ dev = [
     { include-group = "pre-commit" },
     { include-group = "test" },
     { include-group = "types" },
+    "fava-dashboards>=1.2.3",
     "ruff>=0.11",
 ]
 
