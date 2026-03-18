@@ -14,6 +14,7 @@ import { statistics } from "./statistics/index.ts";
 import {
   balance_sheet,
   income_statement,
+  monthly_results,
   trial_balance,
 } from "./tree_reports/index.ts";
 
@@ -37,6 +38,7 @@ export const frontend_routes: FrontendRoute[] = [
   import_report,
   income_statement,
   journal,
+  monthly_results,
   options,
   query,
   statistics,

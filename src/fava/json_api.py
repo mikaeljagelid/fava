@@ -61,6 +61,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from fava.core.query import QueryResultTable
     from fava.core.query import QueryResultText
     from fava.core.tree import SerialisedTreeNode
+    from fava.core.tree import Tree
     from fava.internal_api import ChartData
     from fava.util.date import DateRange
 
@@ -740,6 +741,67 @@ def get_trial_balance() -> TreeReport:
         g.filtered.date_range,
         charts=[],
         trees=[tree.serialise_with_context() for tree in trees],
+    )
+
+
+@dataclass(frozen=True)
+class MonthlyResultsReport:
+    """Data for the monthly results & net worth report."""
+
+    date_range: DateRange | None
+    dates: Sequence[DateRange]
+    income_trees: Sequence[SerialisedTreeNode]
+    expense_trees: Sequence[SerialisedTreeNode]
+    asset_trees: Sequence[SerialisedTreeNode]
+    liability_trees: Sequence[SerialisedTreeNode]
+
+
+@api_endpoint
+def get_monthly_results() -> MonthlyResultsReport:
+    """Get per-interval income, expense, and net worth data."""
+    g.ledger.changed()
+    options = g.ledger.options
+
+    income_interval_trees, dates = g.ledger.interval_balances(
+        g.filtered, g.interval, options["name_income"], accumulate=False
+    )
+    expense_interval_trees, _ = g.ledger.interval_balances(
+        g.filtered, g.interval, options["name_expenses"], accumulate=False
+    )
+    asset_interval_trees, _ = g.ledger.interval_balances(
+        g.filtered, g.interval, options["name_assets"], accumulate=True
+    )
+    liability_interval_trees, _ = g.ledger.interval_balances(
+        g.filtered, g.interval, options["name_liabilities"], accumulate=True
+    )
+
+    def _serialise(
+        trees: Sequence[Tree],
+        date_ranges: Sequence[DateRange],
+        account_name: str,
+    ) -> list[SerialisedTreeNode]:
+        return [
+            tree.get(account_name).serialise(
+                g.conv, g.ledger.prices, dr.end_inclusive, with_cost=False
+            )
+            for tree, dr in zip(trees, date_ranges, strict=True)
+        ]
+
+    return MonthlyResultsReport(
+        date_range=g.filtered.date_range,
+        dates=list(dates),
+        income_trees=_serialise(
+            income_interval_trees, dates, options["name_income"]
+        ),
+        expense_trees=_serialise(
+            expense_interval_trees, dates, options["name_expenses"]
+        ),
+        asset_trees=_serialise(
+            asset_interval_trees, dates, options["name_assets"]
+        ),
+        liability_trees=_serialise(
+            liability_interval_trees, dates, options["name_liabilities"]
+        ),
     )
 
 

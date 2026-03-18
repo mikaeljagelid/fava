@@ -81,6 +81,7 @@ CLIENT_SIDE_REPORTS = [
     "import",
     "journal",
     "income_statement",
+    "monthly_results",
     "options",
     "query",
     "statistics",

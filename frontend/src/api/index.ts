@@ -23,6 +23,7 @@ import {
   error_validator,
   importable_files_validator,
   ledgerDataValidator,
+  monthly_results_validator,
   options_validator,
   source_validator,
   type SourceFile,
@@ -55,6 +56,7 @@ type GetEndpoint =
   | "extract"
   | "imports"
   | "income_statement"
+  | "monthly_results"
   | "journal_page"
   | "trial_balance"
   | "ledger_data"
@@ -265,6 +267,11 @@ export const get_imports = define_paramless_endpoint(
 export const get_income_statement = define_endpoint(
   "income_statement",
   tree_report_validator,
+  filters_conversion_interval,
+);
+export const get_monthly_results = define_endpoint(
+  "monthly_results",
+  monthly_results_validator,
   filters_conversion_interval,
 );
 export const get_journal_page = define_endpoint(

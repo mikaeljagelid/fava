@@ -1,6 +1,7 @@
 import {
   get_balance_sheet,
   get_income_statement,
+  get_monthly_results,
   get_trial_balance,
 } from "../../api/index.ts";
 import {
@@ -13,6 +14,7 @@ import { getURLFilters } from "../../stores/filters.ts";
 import { Route } from "../route.ts";
 import BalanceSheet from "./BalanceSheet.svelte";
 import IncomeStatement from "./IncomeStatement.svelte";
+import MonthlyResults from "./MonthlyResults.svelte";
 import TrialBalance from "./TrialBalance.svelte";
 
 export interface TreeReportProps {
@@ -61,4 +63,20 @@ export const trial_balance = new Route(
     return report;
   },
   () => _("Trial Balance"),
+);
+
+export interface MonthlyResultsProps {
+  date_range: { begin: Date; end: Date } | null;
+  dates: { begin: Date; end: Date }[];
+  income_trees: AccountTreeNode[];
+  expense_trees: AccountTreeNode[];
+  asset_trees: AccountTreeNode[];
+  liability_trees: AccountTreeNode[];
+}
+
+export const monthly_results = new Route(
+  "monthly_results",
+  MonthlyResults,
+  async (url) => get_monthly_results(getURLFilters(url)),
+  () => _("Monthly Results"),
 );

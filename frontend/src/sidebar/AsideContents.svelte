@@ -26,6 +26,7 @@
 <ul class="navigation">
   <Link report="income_statement" name={_("Income Statement")} key="g i" />
   <Link report="balance_sheet" name={_("Balance Sheet")} key="g b" />
+  <Link report="monthly_results" name={_("Monthly Results")} key="g m" />
   <Link report="trial_balance" name={_("Trial Balance")} key="g t" />
   <Link report="journal" name={_("Journal")} key="g j" />
   <Link report="query" name={_("Query")} key="g q">

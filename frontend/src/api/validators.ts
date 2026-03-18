@@ -168,6 +168,15 @@ export const tree_report_validator = object({
   date_range: optional(date_range),
 });
 
+export const monthly_results_validator = object({
+  date_range: optional(date_range),
+  dates: array(date_range),
+  income_trees: array(account_hierarchy_validator),
+  expense_trees: array(account_hierarchy_validator),
+  asset_trees: array(account_hierarchy_validator),
+  liability_trees: array(account_hierarchy_validator),
+});
+
 export const account_report_validator = object({
   charts: chart_validator,
   journal: optional(string),
