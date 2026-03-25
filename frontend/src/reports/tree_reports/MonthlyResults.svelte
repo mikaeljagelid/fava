@@ -38,6 +38,25 @@
     return result;
   }
 
+  function avg_records(
+    records: Record<string, number>[],
+  ): Record<string, number> {
+    const result: Record<string, number> = {};
+    const count = records.length;
+    if (count === 0) {
+      return result;
+    }
+    for (const r of records) {
+      for (const [k, v] of Object.entries(r)) {
+        result[k] = (result[k] ?? 0) + v;
+      }
+    }
+    for (const k of Object.keys(result)) {
+      result[k] /= count;
+    }
+    return result;
+  }
+
   const negated_income = $derived(income_trees.map(negate_tree));
   const negated_expenses = $derived(expense_trees.map(negate_tree));
 
@@ -60,6 +79,9 @@
       ),
     ),
   );
+
+  const avg_results = $derived(avg_records(results_per_month));
+  const avg_net_worth = $derived(avg_records(net_worth_per_month));
 
   function format_amount(currency: string, value: number): string {
     return $operating_currency.includes(currency)
@@ -92,6 +114,11 @@
   <li>
     <p>
       <span class="label">Results</span>
+      <span class="num other avg-col">
+        {#each Object.entries(avg_results) as [currency, value] (currency)}
+          {format_amount(currency, value)}<br />
+        {/each}
+      </span>
       {#each results_per_month as amounts, i (i)}
         <span class="num other">
           {#each Object.entries(amounts) as [currency, value] (currency)}
@@ -127,6 +154,11 @@
   <li>
     <p>
       <span class="label">Net Worth</span>
+      <span class="num other avg-col">
+        {#each Object.entries(avg_net_worth) as [currency, value] (currency)}
+          {format_amount(currency, value)}<br />
+        {/each}
+      </span>
       {#each net_worth_per_month as amounts, i (i)}
         <span class="num other">
           {#each Object.entries(amounts) as [currency, value] (currency)}

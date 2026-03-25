@@ -10,6 +10,11 @@
   margin-top: -1px;
 }
 
+.tree-table-new .avg-col {
+  border-right-width: 3px;
+  opacity: 0.75;
+}
+
 .tree-table-new p > span {
   margin-right: -1px;
   border: 1px solid var(--table-border);

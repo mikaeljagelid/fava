@@ -75,6 +75,7 @@
   <li class="head">
     <p>
       <AccountCellHeader {account} />
+      <span class="num other avg-col">Avg</span>
       {#each time_filters as [title, time] (time)}
         <span class="num other">
           <a href={$urlForAccount(account, { time })}>
