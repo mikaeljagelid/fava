@@ -2,6 +2,10 @@
 
 This fork adds a small set of UI and reporting tweaks on top of upstream Fava.
 
+## Running the current development version
+
+`❯ ./run-fava.sh ~/bc/main.beancount`
+
 ## Added Features
 
 - Hide operating currency in interval tree tables
