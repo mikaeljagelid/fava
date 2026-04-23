@@ -83,10 +83,46 @@
   const avg_results = $derived(avg_records(results_per_month));
   const avg_net_worth = $derived(avg_records(net_worth_per_month));
 
+  // Change vs previous column (right = older). null for the last (oldest) column.
+  const net_worth_change_per_month = $derived(
+    net_worth_per_month.map((amounts, i) => {
+      const prev = net_worth_per_month[i + 1];
+      if (!prev) {
+        return null;
+      }
+      const result: Record<string, number> = {};
+      for (const [currency, value] of Object.entries(amounts)) {
+        result[currency] = value - (prev[currency] ?? 0);
+      }
+      return result;
+    }),
+  );
+
+  const net_worth_change_pct_per_month = $derived(
+    net_worth_per_month.map((amounts, i) => {
+      const prev = net_worth_per_month[i + 1];
+      if (!prev) {
+        return null;
+      }
+      const result: Record<string, number> = {};
+      for (const [currency, value] of Object.entries(amounts)) {
+        const prevVal = prev[currency] ?? 0;
+        result[currency] =
+          prevVal !== 0 ? ((value - prevVal) / Math.abs(prevVal)) * 100 : 0;
+      }
+      return result;
+    }),
+  );
+
   function format_amount(currency: string, value: number): string {
     return $operating_currency.includes(currency)
       ? $ctx.num(value, currency)
       : $ctx.amount(value, currency);
+  }
+
+  function format_pct(value: number): string {
+    const sign = value >= 0 ? "+" : "";
+    return `${sign}${value.toFixed(1)}%`;
   }
 </script>
 
@@ -168,6 +204,40 @@
       {/each}
     </p>
   </li>
+  <li>
+    <p class="change-row">
+      <span class="label">Change</span>
+      <span class="num other avg-col"></span>
+      {#each net_worth_change_per_month as change, i (i)}
+        <span class="num other">
+          {#if change != null}
+            {#each Object.entries(change) as [currency, value] (currency)}
+              <span class={value >= 0 ? "positive" : "negative"}
+                >{format_amount(currency, value)}</span
+              ><br />
+            {/each}
+          {/if}
+        </span>
+      {/each}
+    </p>
+  </li>
+  <li>
+    <p class="change-row">
+      <span class="label">Change %</span>
+      <span class="num other avg-col"></span>
+      {#each net_worth_change_pct_per_month as change, i (i)}
+        <span class="num other">
+          {#if change != null}
+            {#each Object.entries(change) as [currency, value] (currency)}
+              <span class={value >= 0 ? "positive" : "negative"}
+                >{format_pct(value)}</span
+              ><br />
+            {/each}
+          {/if}
+        </span>
+      {/each}
+    </p>
+  </li>
 </ol>
 
 <style>
@@ -184,5 +254,19 @@
     flex: 1;
     min-width: 14em;
     max-width: 30em;
+  }
+
+  .change-row {
+    font-weight: normal;
+    border-top: none;
+    opacity: 0.8;
+  }
+
+  .positive {
+    color: var(--color-budget-positive, #2a9d2a);
+  }
+
+  .negative {
+    color: var(--color-budget-negative, #d9534f);
   }
 </style>
