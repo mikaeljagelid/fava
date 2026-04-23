@@ -50,6 +50,17 @@ This fork adds a small set of UI and reporting tweaks on top of upstream Fava.
     source-slice API and the page reloads automatically.
   - The flag column shows a pointer cursor to indicate it is interactive.
 
+- Monthly Results report with average column
+
+  - Adds a **Monthly Results** report showing Income, Expenses, Assets, and
+    Liabilities broken down by interval (month, quarter, year, etc.).
+  - Each section includes an **Avg** column placed before the per-interval
+    columns, showing the average value across all displayed intervals.
+  - Summary rows for **Results** (net income) and **Net Worth** also include
+    an average column.
+  - The average column is visually distinguished with a thicker right border
+    and reduced opacity.
+
 - Stacked bars follow visible tree nodes (Expenses report)
 
   - Stacked bar series now match the currently visible tree nodes.
