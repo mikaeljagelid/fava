@@ -137,6 +137,7 @@ class BalancesChart:
     label: str
     data: Sequence[DateAndBalance]
     type: Literal["balances"] = "balances"
+    zoom_to_data: bool = False
 
 
 @dataclass(frozen=True)
@@ -218,4 +219,5 @@ class ChartApi:
         return BalancesChart(
             gettext("Net Worth"),
             g.ledger.charts.net_worth(g.filtered, g.interval, g.conv),
+            zoom_to_data=True,
         )
