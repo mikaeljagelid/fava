@@ -5,9 +5,11 @@ import { day } from "../format.ts";
 import type { Validator } from "../lib/validation.ts";
 import {
   array,
+  boolean,
   date,
   number,
   object,
+  optional,
   record,
   string,
 } from "../lib/validation.ts";
@@ -42,6 +44,7 @@ export class LineChart {
   readonly type = "linechart";
   readonly series_names: readonly string[];
   readonly label: string | null;
+  readonly zoomToData: boolean;
   private readonly data: readonly LineChartSeries[];
   readonly tooltipText: (
     c: FormatterContext,
@@ -52,11 +55,13 @@ export class LineChart {
     label: string | null,
     data: readonly LineChartSeries[],
     tooltipText: (c: FormatterContext, d: LineChartDatum) => TooltipContent,
+    zoomToData = false,
   ) {
     this.label = label;
     this.data = sort(data, (d) => -d.values.length);
     this.tooltipText = tooltipText;
     this.series_names = this.data.map((series) => series.name);
+    this.zoomToData = zoomToData;
   }
 
   /** Filter the data of this chart, excluding some series. */
@@ -73,6 +78,7 @@ export class LineChart {
 const balances_validator = object({
   label: string,
   data: array(object({ date, balance: record(number) })),
+  zoom_to_data: optional(boolean),
 });
 
 type ParsedLineChartData = { date: Date; balance: Record<string, number> }[];
@@ -80,15 +86,22 @@ type ParsedLineChartData = { date: Date; balance: Record<string, number> }[];
 export class ParsedLineChart implements ParsedFavaChart {
   readonly label: string | null;
   readonly data: ParsedLineChartData;
+  readonly zoomToData: boolean;
 
-  constructor(label: string | null, data: ParsedLineChartData) {
+  constructor(
+    label: string | null,
+    data: ParsedLineChartData,
+    zoomToData = false,
+  ) {
     this.label = label;
     this.data = data;
+    this.zoomToData = zoomToData;
   }
 
   static validator: Validator<ParsedLineChart> = (json) =>
     balances_validator(json).map(
-      ({ label, data }) => new ParsedLineChart(label, data),
+      ({ label, data, zoom_to_data }) =>
+        new ParsedLineChart(label, data, zoom_to_data ?? false),
     );
 
   with_context(): LineChart {
@@ -109,9 +122,14 @@ export class ParsedLineChart implements ParsedFavaChart {
       values,
     }));
 
-    return new LineChart(this.label, data, (c, d) => [
-      domHelpers.t(c.amount(d.value, d.name)),
-      domHelpers.em(day(d.date)),
-    ]);
+    return new LineChart(
+      this.label,
+      data,
+      (c, d) => [
+        domHelpers.t(c.amount(d.value, d.name)),
+        domHelpers.em(day(d.date)),
+      ],
+      this.zoomToData,
+    );
   }
 }

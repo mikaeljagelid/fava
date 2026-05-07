@@ -37,9 +37,12 @@
   ] as const);
   let x = $derived(scaleUtc([0, innerWidth]).domain(xExtent));
   let valueExtent = $derived(extent(allValues, (v) => v.value));
-  // Include zero in area charts so the entire area is shown, not a cropped part of it
+  // Include zero in area charts so the entire area is shown, not a cropped part of it.
+  // When zoomToData is set, always use the data range regardless of chart mode.
   let yExtent = $derived(
-    $lineChartMode === "area" ? includeZero(valueExtent) : valueExtent,
+    !chart.zoomToData && $lineChartMode === "area"
+      ? includeZero(valueExtent)
+      : valueExtent,
   );
   // Span y-axis as max minus min value plus 5 percent margin
   let y = $derived(scaleLinear([innerHeight, 0]).domain(padExtent(yExtent)));
