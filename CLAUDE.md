@@ -36,7 +36,7 @@ translations when building the Python package.
 
 ```bash
 # Default: run fava against the main ledger
-uv run fava ~/bc/main.beancount
+uv run fava ~/dev_local/ledger/main.beancount ~/dev_local/ledger/gemensamt/main_gm.beancount
 
 # Or against the demo ledger
 uv run fava beans/minimal.sek.beancount

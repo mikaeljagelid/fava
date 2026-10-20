@@ -4,7 +4,7 @@ This fork adds a small set of UI and reporting tweaks on top of upstream Fava.
 
 ## Running the current development version
 
-`❯ ./run-fava.sh ~/bc/main.beancount`
+`❯ ./run-fava.sh ~/dev_local/ledger/main.beancount ~/dev_local/ledger/gemensamt/main_gm.beancount`
 
 ## Added Features
 

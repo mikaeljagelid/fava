@@ -1,4 +1,3 @@
 #!/bin/bash
-cd /Users/mikaeljagelid/Documents/50_Dev/fava
-source .venv/bin/activate
-exec fava "$@"
+# Startar forken ur repots egen venv. Sökvägar till böckerna tolkas från där du står.
+exec "$(dirname "$0")/.venv/bin/fava" "$@"
