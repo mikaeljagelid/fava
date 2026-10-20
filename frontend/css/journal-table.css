@@ -19,7 +19,7 @@
   }
 
   .num {
-    font-family: var(--font-family-monospaced);
+    font-variant-numeric: tabular-nums;
     text-align: right;
   }
 

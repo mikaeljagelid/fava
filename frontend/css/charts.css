@@ -8,7 +8,7 @@ svg text {
   z-index: var(--z-index-floating-ui);
   min-width: 5em;
   padding: 0.5em;
-  font-family: var(--font-family-monospaced);
+  font-variant-numeric: tabular-nums;
   text-align: center;
   pointer-events: none;
   background: var(--background);

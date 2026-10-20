@@ -74,7 +74,7 @@ th {
 td.num,
 th.num {
   width: 7em;
-  font-family: var(--font-family-monospaced);
+  font-variant-numeric: tabular-nums;
   color: var(--text-color);
   text-align: right;
 }
